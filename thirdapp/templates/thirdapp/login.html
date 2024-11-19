@@ -1,13 +1,13 @@
 {% extends  'thirdapp/master.html' %}
 {% block title %}
 
-login
+login/signup
 
 {% endblock %}
 
 {% block content %}
 <div class="login-container">
-    <h2>Login</h2>
+    <h4>LOGIN</h4>
     <form  method ="post" style ="width: 50% ;">
         {% csrf_token %}
         <div class="mb-3">
@@ -24,6 +24,7 @@ login
           <label class="form-check-label" for="exampleCheck1">Check me out</label>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <p>Don't have an account? <a href="{% url 'signup' %}">signup</a></p>
       </form>
 </div>
 

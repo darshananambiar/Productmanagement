@@ -1,14 +1,21 @@
-{% extends  'thirdapp/master.html' %}
-{% block title %}
-
-home
-
-{% endblock %}
+{% extends 'thirdapp/master.html' %}
+{% load static %}
+{% block title %}home{% endblock %}
 
 {% block content %}
-<div class="login-container">
-    <h2>home</h2>
-    
-</div>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
+<div class="d-flex">
+    {% for product in productslist %}
+    <div class="card">
+        <img src="{% static product.image %}" class="card-img-top" alt="{{ product.name }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <h4>Price: Rs. {{ product.price }}</h4>
+            <a href="#" class="btn btn-primary">Add to cart</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends  'thirdapp/master.html' %}
+{% block title %}
+
+login/signup
+
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h4>LOGIN OUT</h4>
+    <h1>You have been logged out</h1>
+    <a href="{% url 'login' %}">Login again</a>
+</div>
+
+{% endblock %}

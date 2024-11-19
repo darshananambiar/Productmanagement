@@ -1,0 +1,39 @@
+/* Set a black background for the entire content area */
+body {
+    background-color: black;
+    color: white;
+}
+
+/* Container for product cards */
+.d-flex {
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+/* Styling for each product card */
+.card {
+    width: 300px; /* Fixed width for consistency */
+    margin: 15px; /* Space between cards */
+    background-color:grey; /* Darker background for each card */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Slight rounding for a smooth look */
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow effect */
+}
+
+/* Image sizing for equal dimensions */
+.card img {
+    height: 200px; /* Fixed height */
+    object-fit: cover; /* Ensure images are cropped to fit */
+    width: 100%; /* Full width of the card */
+    border-bottom: 1px solid #333;
+}
+
+/* Button styling */
+.card .btn-primary {
+    background-color: green;
+    border: none;
+    margin-top: 10px;
+}
