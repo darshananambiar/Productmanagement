@@ -7,3 +7,10 @@ class User(models.Model):
 
     class Meta:
         db_table = 'users'
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.FloatField()
+    quantity = models.IntegerField()
+    image = models.ImageField(upload_to='products/')

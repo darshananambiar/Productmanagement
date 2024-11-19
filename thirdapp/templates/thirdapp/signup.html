@@ -7,7 +7,7 @@ signup
 
 {% block content %}
 <div class="login-container">
-    <h2>signup</h2>
+    <h2>Signup</h2>
     <form method="post"  style ="width: 50% ;">
         {% csrf_token %}
         <div class="mb-3">
@@ -25,10 +25,11 @@ signup
           </div>
         <div class="mb-3 form-check">
          
-          <label class="form-check-label" for="exampleCheck1">Already have account <a href="{% url 'login' }">login</a></label>
+          <label class="form-check-label" for="exampleCheck1">Already have account <a href="{% url 'login' %}">login</a></label>
         </div>
-        <button type="submit" class="btn btn-primary">signup</button>
+        <button type="submit" class="btn btn-primary">Signup</button>
       </form>
+    
       {{message}}
 </div>
 
