@@ -1,0 +1,23 @@
+{% extends  'thirdapp/master.html' %}
+{% block title %}
+
+addcategory
+
+{% endblock %}
+
+{% block content %}
+<h1>Add Category</h1>
+<form method="post" enctype="multipart/form-data"  style ="width: 50% ;">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Category name</label>
+      <input  name= "name" type="text" class="form-control" id="name" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea type="" class="form-control" id="description" name="description"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+    {{message}}
+{% endblock %}

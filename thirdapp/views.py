@@ -1,9 +1,34 @@
 from django.shortcuts import render, redirect
-from .models import User
-from django.contrib.auth import logout
+from .models import Product, User,Category
+from django.db.models import Sum,Avg,Min,Max,Count
+from django.db.models.functions import Lower, Upper,Length,Concat,Replace,Abs,Round
+from django.core.paginator import Paginator
+
 # Create your views here.
 def login(request):
-    return render(request, 'thirdapp\login.html')
+    if 'user_id' in request.session:
+        return redirect ('home')
+    
+    message=''
+    if request.method == 'POST':
+        email = request.POST['email'] 
+        password = request.POST['password']
+        user = User.objects.filter(email=email, password=password).first()
+        if user:
+            request.session['user_id']=user.id
+            request.session['user_name']=user.email
+            return render (request,'thirdapp/home.html',{'user':user})
+        else :
+            message='Invalid username or password'
+    return render(request, 'thirdapp\login.html',{'message':message})
+
+def logout (request):
+    if 'user_id' in request.session:
+        del request.session['user_id']
+        del request.session['user_name']
+        return redirect('login')
+
+    
 
 def signup(request):
     message=""
@@ -23,76 +48,92 @@ def signup(request):
     return render(request, 'thirdapp\signup.html',{'message':message})
 
 def home(request):
-    product_list = [
-    {
-        "product_id": 1,
-        "name": "Laptop",
-        "description": "High-performance laptop with Intel i7 processor, 16GB RAM, 512GB SSD",
-        "price": 1099.99,
-        "quantity": 15,
-        "image": "images/laptop.avif"
-    },
-    {
-        "product_id": 2,
-        "name": "Smartphone",
-        "description": "5G enabled smartphone with 128GB storage and 48MP camera",
-        "price": 799.99,
-        "quantity": 50,
-         "image": "images/mobile.avif"
-    },
-    {
-        "product_id": 3,
-        "name": "Neckchain",
-        "description": "Portable Bluetooth speaker with 24-hour battery life",
-        "price": 49.99,
-        "quantity": 100,
-         "image": "images/neckchain.avif"
-    },
-    {
-        "product_id": 4,
-        "name": "Smarttv",
-        "description": "Fitness smartwatch with heart rate monitor and GPS",
-        "price": 199.99,
-        "quantity": 30,
-         "image": "images/tv.avif"
-    },
-    {
-        "product_id": 5,
-        "name": "Washingmachine",
-        "description": "Noise-canceling wireless earbuds with charging case",
-        "price": 129.99,
-        "quantity": 80,
-         "image": "images/washing machine.avif"
-    },
-    {
-        "product_id": 6,
-        "name": "smartwatch",
-        "description": "Noise-canceling wireless earbuds with charging case",
-        "price": 129.99,
-        "quantity": 80,
-         "image": "images/smartwatch.avif"
-    },
-    {
-        "product_id": 7,
-        "name": "Bracelet",
-        "description": "Noise-canceling wireless earbuds with charging case",
-        "price": 129.99,
-        "quantity": 80,
-         "image": "images/bracelet.avif"
-    },
-    {
-        "product_id": 7,
-        "name": "Makeupset",
-        "description": "Noise-canceling wireless earbuds with charging case",
-        "price": 129.99,
-        "quantity": 80,
-         "image": "images/makeup.avif"
+   
+    # product_list = Product.objects.all().annotate(title = Upper('name'))
+    # product_list = Product.objects.values('name','price','id')
+    # product_list =Product.objects.filter(price__gt = 10000) .order_by('-price')
+    # product_list =Product.objects.filter(name__icontains = 'neck')
+    # product_list =Product.objects.filter(name__istartswith = 'w')
+    # product_list =Product.objects.filter(name__iendswith = 'e')
+    # product_list =Product.objects.filter(price__range =(5000 ,20000))
+    total_price = Product.objects.aggregate(total=Sum("price"))
+    avg_price= Product.objects.aggregate(average=Avg("price"))
+    min_price= Product.objects.aggregate(min=Min("price"))
+    max_price= Product.objects.aggregate(maximum=Max("price"))
+    count_total= Product.objects.aggregate(counttotal=Count("price"))
+    print ('totalprice', total_price)
+    print ('averageprice',  avg_price)
+    print ('minpriceprice', min_price)
+    print ('maximumprice',  max_price)
+    print ('count',  count_total)
+
+
+    category_list=Category.objects.all()
+
+    category=request.GET.get('category','all')
+    if category=='all':
+        product_list = Product.objects.all()
+    else:
+        product_list=Product.objects.filter(category_id=category)
+
+    search_text=request.GET.get('serch_text','')
+    if search_text:
+        product_list=Product.objects.filter(name__icontains=search_text)
+
+    paginator= Paginator(product_list, 8)
+    page_number = request.GET.get('page')  # Default is None
+    page_obj = paginator.get_page(page_number)
+
+    context={
+        'category_list':category_list,
+        'productslist':page_obj,
+        
+       
     }
-    ]
-    return render(request, 'thirdapp/home.html',{'productslist' : product_list})
+    return render(request, 'thirdapp/home.html',context)
 
+def addproduct(request):
+    category_list=Category.objects.all()
+    message = ""
+    if request.method == 'POST':
+        name = request.POST['name']
+        category = request.POST['category']
 
+        description = request.POST['description']
+        price = request.POST['price']
+        quantity = request.POST['quantity']
+        image = request.FILES['image']
 
-def logout_view(request):
-    logout(request)
-    return redirect('home')
+        product_exist = Product.objects.filter(name = name).exists()
+        if product_exist:
+            message = "Product already exists!"
+
+        else:
+            product = Product(name=name, description=description, price=price, quantity=quantity, image=image,category_id=category)
+            product.save()
+            message = "Product added successfully!"
+            
+    context={
+        'category_list':category_list,
+        'message':message,
+    } 
+    return render(request, 'thirdapp/addproduct.html',context)
+
+def product_details(request,pid):
+    product=Product.objects.get(id=pid)
+    return render(request, 'thirdapp/productdetail.html',{'product':product})
+    
+def addcategory(request):
+    message=""
+    if request.method == 'POST':
+        name=request.POST.get("name")
+        description=request.POST.get("description")
+        category,create=Category.objects.get_or_create(name=name,defaults={"name":name,"description":description})
+        if create:
+            message="Category added successfully"
+        else:
+            message="Category already exists"
+    return render(request,"thirdapp/addcategory.html",{"message":message})
+    
+    
+

@@ -1,21 +1,102 @@
 {% extends 'thirdapp/master.html' %}
 {% load static %}
-{% block title %}home{% endblock %}
+{% block title %}
+                                                                                                                                
+home
+<!-- <link rel="stylesheet" href="{% static 'css/index.css' %}"> -->
+{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-<div class="d-flex">
-    {% for product in productslist %}
-    <div class="card">
-        <img src="{% static product.image %}" class="card-img-top" alt="{{ product.name }}">
-        <div class="card-body">
-            <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text">{{ product.description }}</p>
-            <h4>Price: Rs. {{ product.price }}</h4>
-            <a href="#" class="btn btn-primary">Add to cart</a>
-        </div>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid m-2 ">
+    
+    <a href="{% url 'addproduct' %}" class="btn btn-primary w-50">ADD</a>
+
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      select category
+      </button>
+      <ul class="dropdown-menu dropdown-menu-dark">
+        <li><a class="dropdown-item active" href="#">all</a></li>
+        {% for category in category_list %}
+        <li><a class="dropdown-item" href="{% url 'home' %}?category={{category.id}} ">{{ category.name }}</a></li>
+        {% endfor %}
+      </ul>
     </div>
-    {% endfor %}
+
+    
+  
+
+        <form class="d-flex" role="search" method="get" action="{% url 'home' %}">
+          <input class="form-control me-2" type="search" name="serch_text" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+
+      </div>
+</nav>
+
+<div class=" d-flex flex-wrap m-4 text-center px-4 gap-4 " style="height:14 auto; ">
+  {% for product in productslist %}
+
+  <div class="card m-2 " style="width: 22rem; height:auto;">
+    <a href = "{% url 'products' product.id %}">
+        <img src="{{ product.image.url }}" class="card-img-top" alt="..." height="200px">
+    </a>
+    <div class="card-body">
+      <h5 class="card-title">{{product.name}}</h5>
+      <h5 class="card-title">{{product.title}}</h5>
+      <p class="card-text">{{product.description}}</p>
+      <h4>Price : Rs. {{product.price}}</h4>
+      <a href="#" class="btn btn-primary">Add to cart</a>
+    </div>
+  </div>
+ {% endfor %}
 </div>
+
+  
+<div class="pagination d-flex justify-content-center" >
+  <ul class="pagination">
+      <!-- First and Previous Page Links -->
+      {% if productslist.has_previous %}
+          <li class="page-item">
+              <a class="page-link" href="?page=1">First</a>
+          </li>
+          <li class="page-item">
+              <a class="page-link" href="?page={{ productslist.previous_page_number }}">Previous</a>
+          </li>
+      {% endif %}
+
+      <!-- Page Number Links -->
+      {% for page_num in productslist.paginator.page_range %}
+          {% if page_num == productslist.number %}
+              <!-- Current page (highlighted) -->
+              <li class="page-item active">
+                  <a class="page-link" href="#">{{ page_num }}</a>
+              </li>
+          {% else %}
+              <!-- Other pages -->
+              <li class="page-item">
+                  <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+              </li>
+          {% endif %}
+      {% endfor %}
+
+      <!-- Next and Last Page Links -->
+      {% if productslist.has_next %}
+          <li class="page-item">
+              <a class="page-link" href="?page={{ productslist.next_page_number }}">Next</a>
+          </li>
+          <li class="page-item">
+              <a class="page-link" href="?page={{ productslist.paginator.num_pages }}">Last</a>
+          </li>
+      {% endif %}
+  </ul>
+</div>
+
+  
+ 
+</div>
+
+
 {% endblock %}

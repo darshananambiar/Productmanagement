@@ -1,0 +1,45 @@
+{% extends  'thirdapp/master.html' %}
+{% block title %}
+
+addproduct
+
+{% endblock %}
+
+{% block content %}
+<h1>Add Product</h1>
+<form method="post" enctype="multipart/form-data"  style ="width: 50% ;">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="category" class="form-label">select category</label>
+      <select  name= "category" class="form-control" id="category" >
+        <option value="" >select category</option>
+          {% for category in category_list %}
+          <option value="{{ category.id }}">{{ category.name }}</option>
+          {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label">Product name</label>
+      <input  name= "name" type="text" class="form-control" id="name" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea type="" class="form-control" id="description" name="description"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input  name ="price" type="number" class="form-control" id="price">
+      </div>
+      <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity</label>
+        <input  name ="quantity" type="number" class="form-control" id="quantity">
+      </div> <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <input  name ="image" type="file" class="form-control" id="image">
+      </div>
+    <div class="mb-3 form-check">
+     
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+  </form>
+{% endblock %}

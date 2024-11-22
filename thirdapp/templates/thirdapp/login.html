@@ -26,6 +26,10 @@ login/signup
         <button type="submit" class="btn btn-primary">Submit</button>
         <p>Don't have an account? <a href="{% url 'signup' %}">signup</a></p>
       </form>
+      <p>{{message}}</p>
+</div>
+<div>
+  <p>Don't have an account? <a href="{% url 'signup' %}">SignUp</a></p>
 </div>
 
 {% endblock %}
